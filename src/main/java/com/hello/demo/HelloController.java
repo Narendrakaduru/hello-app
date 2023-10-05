@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 	
-	@RequestMapping("/listen")
+	@RequestMapping("/hello")
     public String Listen(){
-        return "Listen to me Hello!";
+        return "Hello this is a hello API controller!";
     }
 }
