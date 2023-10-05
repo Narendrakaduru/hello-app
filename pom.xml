@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hello</groupId>
-	<artifactId>Hello</artifactId>
+	<artifactId>hello-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Hello</name>
 	<description>Spring Boot Crud Operation</description>
