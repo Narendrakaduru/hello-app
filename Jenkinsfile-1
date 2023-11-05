@@ -34,8 +34,27 @@ pipeline {
         }
         stage('Shell Deploy'){
             steps{
-                sh 'whoami'
-                sh 'sudo sh ${WORKSPACE}/${App_Name}.sh'
+                sh '''
+                    echo "########################## Check if ${App_Name} is running or not ##########"
+                    ps -ef | grep ${App_Name}.jar
+                    echo "########################## Kill running ${App_Name} ########################"
+                    pkill -f ${App_Name}.jar
+                    echo "Killed ${App_Name}"
+                    sleep 5s
+                    echo "########################## Check if ${App_Name} is running or not ##########"
+                    ps -ef | grep ${App_Name}.jar
+                    echo "########################## Take Backup of old jar ########################"
+                    mv /app/${App_Name}/release/${App_Name}.jar /app/${App_Name}/backup
+                    echo "Backup completed successfully"
+                    echo "########################## Move to jar to Release ########################"
+                    mv /app/${App_Name}/staging/${App_Name}.jar /app/${App_Name}/release
+                    echo "JAR moved to release"
+                    echo "########################## Deploy ${App_Name} ##############################"
+                    java -jar /app/${App_Name}/release/${App_Name}.jar &
+                    echo "Successfully deployed ${App_Name}"
+                    echo "########################## Check if ${App_Name} is running or not ##########"
+                    ps -ef | grep ${App_Name}.jar
+                '''
             }
         }
     }
