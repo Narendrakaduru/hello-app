@@ -1,0 +1,105 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+
+				checkout([$class: 'GitSCM',
+					branches: [
+						[name: "${BRANCH}"]
+					],
+					doGenerateSubmoduleConfigurations: false,
+					extensions: [],
+					gitTool: 'Default',
+					submoduleCfg: [],
+					userRemoteConfigs: [
+						[credentialsId: 'Git-Auth',
+							url: 'git@github.com:Narendrakaduru/${App_Name}.git'
+
+						]
+					]
+				])
+            }
+        }
+        stage('Maven Build'){
+            steps{
+                sh '''
+                mvn clean install
+                cd target
+                mv ${App_Name}-0.0.1-SNAPSHOT.jar ${App_Name}.jar
+                mv ${App_Name}.jar /app/${App_Name}/staging
+                '''
+            }
+        }
+        stage('Add Service File') {
+            steps {
+                script {
+                    // Define the service name and the service file path
+                    def service_name = env.App_Name
+                    def service_file = "/etc/systemd/system/${service_name}.service"
+
+                    // Check if the service file already exists
+                    if (fileExists(service_file)) {
+                        echo "Service file $service_file already exists."
+                    } else {
+                        // Create the service file if it doesn't exist
+                        writeFile(file: service_file, text: """[Unit]
+Description=${service_name} java service
+
+[Service]
+WorkingDirectory=/app/${service_name}/release
+ExecStart=java -jar ${service_name}.jar
+User=root
+Group=root
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+SyslogIdentifier=${service_name}
+Environment="SERVER_PORT=${App_Port}"
+
+[Install]
+WantedBy=multi-user.target""")
+                        echo "Service file $service_file created."
+
+                        // Reload systemd to pick up the new service file
+                        sh 'systemctl daemon-reload'
+                    }
+                }
+            }
+        }
+        stage('Service Deploy'){
+            steps{
+                script{
+                    sh '''
+                        echo "########################## Check if listen-app is running or not ##########"
+                        ps -ef | grep ${App_Name}.jar
+
+                        echo "########################## Stop service ${App_Name} ########################"
+                        systemctl stop ${App_Name}.service
+                        echo "${App_Name} service stopped"
+                        sleep 5s
+
+                        echo "########################## Check if listen-app is running or not ##########"
+                        ps -ef | grep ${App_Name}.jar
+
+                        echo "########################## Take Backup of old jar ########################"
+                        mv /app/${App_Name}/release/${App_Name}.jar /app/${App_Name}/backup
+                        echo "Backup completed successfully"
+
+                        echo "########################## Move to jar to Release ########################"
+                        mv /app/${App_Name}/staging/${App_Name}.jar /app/${App_Name}/release
+                        echo "JAR moved to release"
+
+                        echo "########################## Start service ${App_Name} ########################"
+                        systemctl start ${App_Name}.service
+                        echo "${App_Name} service started"
+                    '''
+                }
+            }
+        }
+    }
+    tools{
+        maven 'M2_HOME'
+    }
+}
