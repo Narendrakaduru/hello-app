@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+
+				checkout([$class: 'GitSCM',
+					branches: [
+						[name: "${BRANCH}"]
+					],
+					doGenerateSubmoduleConfigurations: false,
+					extensions: [],
+					gitTool: 'Default',
+					submoduleCfg: [],
+					userRemoteConfigs: [
+						[credentialsId: 'Git-Auth',
+							url: 'git@github.com:Narendrakaduru/${App_Name}.git'
+
+						]
+					]
+				])
+            }
+        }
+        stage('Maven Build'){
+            steps{
+                sh '''
+                mvn clean install
+                cd target
+                mv ${App_Name}-0.0.1-SNAPSHOT.jar ${App_Name}.jar
+                mv ${App_Name}.jar /app/${App_Name}/staging
+                '''
+            }
+        }
+        stage('Shell Deploy'){
+            steps{
+                sh 'whoami'
+                sh 'sudo sh ${WORKSPACE}/${App_Name}.sh'
+            }
+        }
+    }
+    tools{
+        maven 'M2_HOME'
+    }
+}
