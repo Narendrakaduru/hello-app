@@ -1,4 +1,6 @@
-FROM mdsol/java17-jre:latest
-ADD target/hello-app-0.0.1-SNAPSHOT.jar hello-app.jar
+FROM alpine:latest
+RUN apk --no-cache add openjdk17-jdk
 EXPOSE 6701
-ENTRYPOINT ["java","-jar","hello-app.jar","&"]
+COPY target/hello-app-0.0.1-SNAPSHOT.jar /app/hello-app.jar
+WORKDIR /app
+ENTRYPOINT ["java", "-jar", "hello-app.jar"]
