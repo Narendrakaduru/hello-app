@@ -38,8 +38,13 @@ pipeline {
                     echo "########################## Check if ${App_Name} is running or not ##########"
                     ps -ef | grep ${App_Name}.jar
                     echo "########################## Kill running ${App_Name} ########################"
-                    pkill -f ${App_Name}.jar
-                    echo "Killed ${App_Name}"
+                    if pgrep -f "$App_Name" > /dev/null; then
+                      echo "The process $App_Name is running. Attempting to kill it."
+                      pkill -f ${App_Name}.jar
+                      echo "The process $App_Name has been terminated."
+                    else
+                      echo "The process $App_Name is not running."
+                    fi
                     sleep 5s
                     echo "########################## Check if ${App_Name} is running or not ##########"
                     ps -ef | grep ${App_Name}.jar
