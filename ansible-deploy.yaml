@@ -1,0 +1,12 @@
+---
+- hosts: worker3  # Update this to match the host or group in your Ansible inventory
+  become: yes
+
+  tasks:
+    - name: Copy JAR to remote server
+      copy:
+        src: /jenkins/workspace/Hello-app-jar-ansible-deploy/hello-app.jar.jar
+        dest: /home/vagrant/hello-app.jar.jar
+
+    - name: Deploy JAR using java -jar command
+      command: java -jar /home/vagrant/hello-app.jar.jar
