@@ -7,6 +7,7 @@
       copy:
         src: /var/lib/jenkins/workspace/Hello-app-jar-ansible-deploy/hello-app.jar
         dest: /home/vagrant/hello-app.jar
+        remote_src: false
 
     - name: Deploy JAR using java -jar command
       command: java -jar /home/vagrant/hello-app.jar
