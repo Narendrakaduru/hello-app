@@ -5,7 +5,7 @@
   tasks:
     - name: Copy JAR to remote server
       copy:
-        src: /jenkins/workspace/Hello-app-jar-ansible-deploy/hello-app.jar.jar
+        src: /var/lib/jenkins/workspace/Hello-app-jar-ansible-deploy/hello-app.jar.jar
         dest: /home/vagrant/hello-app.jar.jar
 
     - name: Deploy JAR using java -jar command
