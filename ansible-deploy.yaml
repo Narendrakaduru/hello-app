@@ -9,4 +9,4 @@
         dest: /home/vagrant/hello-app.jar
 
     - name: Deploy JAR using java -jar command
-      command: java -jar /home/vagrant/hello-app.jar
+      command: java -jar /home/vagrant/hello-app.jar &
