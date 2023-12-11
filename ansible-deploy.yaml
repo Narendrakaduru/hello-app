@@ -1,6 +1,7 @@
 ---
-- hosts: worker1  # Update this to match the host or group in your Ansible inventory
+- hosts: worker1
   become: yes
+  gather_facts: yes
 
   tasks:
     - name: Copy JAR to remote server
@@ -8,7 +9,20 @@
         src: /var/lib/jenkins/workspace/Hello-app-jar-ansible-deploy/target/hello-app.jar
         dest: /home/vagrant/hello-app.jar
 
-    - name: Deploy JAR using java -jar command
-      command: java -jar /home/vagrant/hello-app.jar &
+    - name: Verify destination directory
+      stat:
+        path: /home/vagrant/hello-app.jar
+      register: jar_file_info
+
+    - name: Debug information about the JAR file
       debug:
-        var: ansible_facts
+        var: jar_file_info
+
+    - name: Deploy JAR using java -jar command
+      command: "java -jar /home/vagrant/hello-app.jar &"
+      register: java_command_output
+      ignore_errors: yes  # Continue with the playbook even if the command fails
+
+    - name: Debug information about the java command output
+      debug:
+        var: java_command_output.stdout_lines
