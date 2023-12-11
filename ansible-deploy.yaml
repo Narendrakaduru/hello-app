@@ -10,3 +10,5 @@
 
     - name: Deploy JAR using java -jar command
       command: java -jar /home/vagrant/hello-app.jar &
+      debug:
+        var: ansible_facts
