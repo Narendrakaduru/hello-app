@@ -1,5 +1,5 @@
 ---
-- hosts: worker3  # Update this to match the host or group in your Ansible inventory
+- hosts: worker1  # Update this to match the host or group in your Ansible inventory
   become: yes
 
   tasks:
