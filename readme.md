@@ -16,3 +16,8 @@ Jenkinsfile-2 consists of service deploymet here we will be writing a service fi
 | JAR Deployment | Service Deployment |
 | -------------- | ------------------ |
 | If the server goes down or if we need to restart the server then after the server is up the jar will not be in the running state.	| If we create a servicefile or unit file to manage this jar file it will be started automatically when the server starts. |
+| can bring up the JAR using java -jar hello-app.jar | can bring up the service using systemctl start hello-app and also you can enable the service to restart whenever the server restarts. |
+
+Jenkinsfile-3 consists of a simple dockerfile to build and deploy the appication to docker container.
+Jenkinsfile-4 consists of Trivyscan for vulnerability scan in the images and file system as well.
+Jenkinsfile consists of K8s deployment using a simple deployment yaml file.
