@@ -10,7 +10,9 @@ listen-app will run on port 6702 in /listen route.
 we will be passing this hello-app and listen-app as a prameter from our jenkins to clone the repository such that it will be useful when we need to integrate a new microservice comesup to our project.
 
 this repo consists of 5 jenkins files of diffrent types of deployments.
+
 Jenkinsfile-1 consists of simple jar deployment with a shellscript.
+
 Jenkinsfile-2 consists of service deploymet here we will be writing a service file or unit file to deploy our jar file
 
 | JAR Deployment | Service Deployment |
@@ -19,5 +21,7 @@ Jenkinsfile-2 consists of service deploymet here we will be writing a service fi
 | can bring up the JAR using _java -jar hello-app.jar_ | can bring up the service using _systemctl start hello-app_ and also you can enable the service to restart whenever the server restarts. |
 
 Jenkinsfile-3 consists of a simple dockerfile to build and deploy the appication to docker container.
+
 Jenkinsfile-4 consists of Trivyscan for vulnerability scan in the images and file system as well.
+
 Jenkinsfile consists of K8s deployment using a simple deployment yaml file.
